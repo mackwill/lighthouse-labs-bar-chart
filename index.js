@@ -1,58 +1,27 @@
-//const jquery = require("jquery");
+const createBarElement = function (newElem, xVal, yVal, i, options) {
+  let backgroundColor = "";
+  i % 2 === 0 ? (backgroundColor = "red") : (backgroundColor = "green");
 
-// let data = [
-//   ["May", 18],
-//   ["June", 10],
-//   ["July", 15],
-// ];
+  newElem.style.height = (yVal / options.height) * options.height + "px";
+  console.log("height: ", (yVal / options.height) * options.height + "px");
+  newElem.style.width = options.width / data.length + "px";
+  console.log("width:" + options.width / data.length + "px");
+  newElem.style.margin = "10px";
+  newElem.style.backgroundColor = backgroundColor;
 
-// let options = {
-//   width: 50,
-//   height: 350,
-//   // color: "red",
-//   // textColor: "white",
-//   // labels: ["xVals", "yVals"]
-// };
+  newElem.innerText = xVal;
+  $(".graph").before(newElem);
+  i++;
+};
 
-const drawBarChart = function (data) {
-  //Take the options and create in-line css or stylesheet css
-
-  //take the data
-
-  let options = {
-    width: 50,
-    height: 350,
-    // color: "red",
-    // textColor: "white",
-    // labels: ["xVals", "yVals"]
-  };
-
-  let xVal = null;
-  let yVal = null;
-  let barWidth = options.width / data.length;
+const drawBarChart = function (data, options) {
   let i = 0;
 
   for (let elem in data) {
-    xVal = data[elem][0];
-    yVal = data[elem][1];
-    let backgroundColor = "";
-    i % 2 === 0 ? (backgroundColor = "red") : (backgroundColor = "green");
-
     let tmp = document.createElement("div");
-    tmp.setAttribute("id", xVal);
-    console.log("xVal:", xVal);
+    tmp.setAttribute("id", data[elem][0]);
 
-    tmp.style.height = yVal / options.height + "px";
-    console.log("height: ", yVal / options.height + "px");
-    tmp.style.width = options.width / data.length + "px";
-    console.log("width:" + options.width / data.length + "px");
-    tmp.style.margin = "10px";
-    tmp.style.backgroundColor = backgroundColor;
-
-    //tmp.innerText = xVal
-    $(".graph").before(tmp);
+    createBarElement(tmp, data[elem][0], data[elem][1], i, options);
     i++;
   }
 };
-
-// export default drawBarChart();

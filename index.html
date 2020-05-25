@@ -18,23 +18,32 @@
         ["July", 15],
       ];
 
-      let options = {
-        width: 50,
-        height: 350,
-        // color: "red",
-        // textColor: "white",
-        // labels: ["xVals", "yVals"]
-      };
+      // let options = {
+      //   width: 50,
+      //   height: 3500,
+      //   // color: "red",
+      //   // textColor: "white",
+      //   // labels: ["xVals", "yVals"]
+      // };
     </script>
   </head>
   <body>
     <div class="graph">
       <script>
-        drawBarChart([
-          ["May", 18000],
-          ["June", 10000],
-          ["July", 15000],
-        ]);
+        drawBarChart(
+          [
+            ["May", 30],
+            ["June", 50],
+            ["July", 100],
+          ],
+          {
+            width: 50,
+            height: 3500,
+            color: "red",
+            // textColor: "white",
+            // labels: ["xVals", "yVals"]
+          }
+        );
       </script>
     </div>
   </body>
