@@ -1,0 +1,20 @@
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+/* .bar1 {
+  width: 350px;
+  height: 50px;
+  background-color: blue;
+  border: 1px solid blue;
+  color: white;
+}
+
+.bar2 {
+  width: 350px;
+  height: 50px;
+  background-color: green;
+  border: 1px solid green;
+  color: white;
+} */
