@@ -1,8 +1,13 @@
 #graph {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  display: block;
+  /* flex-direction: row;
+  justify-content: space-around; */
   padding: 5px;
+}
+
+.bars {
+  display: flex;
+  justify-content: space-around;
 }
 
 .bar {
@@ -16,5 +21,13 @@
 .container {
   margin-top: auto;
   margin-bottom: 0;
+  text-align: center;
+}
+
+.xLabel {
+  transform: rotate(-45deg);
+}
+
+.title {
   text-align: center;
 }
