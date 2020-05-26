@@ -17,9 +17,11 @@ const findYMax = function (data, height) {
   return height / Math.max(...yData);
 };
 
-const xLabel = function (xVal) {
+const xLabel = function (xVal, labelSize, labelColor) {
   let tmp = document.createElement("p");
   tmp.setAttribute("class", xVal + " xLabel");
+  tmp.style.fontSize = labelSize;
+  tmp.style.color = labelColor;
 
   tmp.innerText = xVal;
   $("#" + xVal).append(tmp);
@@ -37,26 +39,31 @@ const createChart = function (width, height, border = "1px solid black") {
   $("body").append(tmp);
 };
 
-const createBarElement = function (newElem, xVal, yVal, i, options, yScale) {
-  let backgroundColor = "";
-  i % 2 === 0 ? (backgroundColor = "red") : (backgroundColor = "green");
-
+const createBarElement = function (
+  newElem,
+  xVal,
+  yVal,
+  backgroundColor,
+  yScale
+) {
   newElem.style.height = yVal * yScale * 0.8 + "px";
-  //newElem.style.width = (options.width / data.length) * 0.5 + "px";
-  console.log("width:" + newElem.style.width);
+  //console.log("width:" + newElem.style.width);
   newElem.style.backgroundColor = backgroundColor;
 
   newElem.innerText = yVal;
   $("#graph").append(newElem);
-  i++;
 };
 
 const drawBarChart = function (data, options) {
   let i = 0;
 
-  createChart(options.width, options.height);
-  createGraphTitle("Test Title", "orange", 12);
-  let yScale = findYMax(data, options.height);
+  let graphOpts = options.graph;
+  let barOpts = options.bar;
+
+  let yScale = findYMax(data, graphOpts.height);
+
+  createChart(graphOpts.width, graphOpts.height);
+  createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
 
   for (let elem in data) {
     //console.log(elem)
@@ -65,16 +72,22 @@ const drawBarChart = function (data, options) {
     tmp.setAttribute("class", data[elem][0] + " bar");
 
     // Create bar element
-    createBarElement(tmp, data[elem][0], data[elem][1], i, options, yScale);
+    createBarElement(
+      tmp,
+      data[elem][0],
+      data[elem][1],
+      barOpts.backgroundColor,
+      yScale
+    );
 
     //Create x-axis labels
-    xLabel(data[elem][0]);
+    xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor);
 
     // Create parent div element for bar and x-axis label
     $("." + data[elem][0]).wrapAll(function () {
       return `<div class="${data[elem][0]} container
               id=${data[elem][0]}-wrapper"
-              style="width: ${(options.width / data.length) * 0.7}px"></div>`;
+              style="width: ${(graphOpts.width / data.length) * 0.7}px"></div>`;
     });
 
     i++;
