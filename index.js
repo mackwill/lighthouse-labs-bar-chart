@@ -39,19 +39,24 @@ const createChart = function (width, height, border = "1px solid black") {
   $("body").append(tmp);
 };
 
-const createBarElement = function (
-  newElem,
-  xVal,
-  yVal,
-  backgroundColor,
-  yScale
-) {
-  newElem.style.height = yVal * yScale * 0.8 + "px";
-  //console.log("width:" + newElem.style.width);
-  newElem.style.backgroundColor = backgroundColor;
+// const defineBarColor = function(backgroundColor) {
+//   for (let i = 0; i < )
+// }
 
-  newElem.innerText = yVal;
-  $("#graph").append(newElem);
+const createBarElement = function (xVal, yVal, barColor, yScale) {
+  if (barColor === undefined) {
+    barColor = "#FF8D33";
+  }
+
+  let tmp = document.createElement("div");
+  tmp.setAttribute("id", xVal);
+  tmp.setAttribute("class", xVal + " bar");
+
+  tmp.style.height = yVal * yScale * 0.8 + "px";
+  tmp.style.backgroundColor = barColor;
+  tmp.innerText = yVal;
+
+  $("#graph").append(tmp);
 };
 
 const drawBarChart = function (data, options) {
@@ -59,6 +64,7 @@ const drawBarChart = function (data, options) {
 
   let graphOpts = options.graph;
   let barOpts = options.bar;
+  let barColor = "";
 
   let yScale = findYMax(data, graphOpts.height);
 
@@ -66,19 +72,19 @@ const drawBarChart = function (data, options) {
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
 
   for (let elem in data) {
-    //console.log(elem)
-    let tmp = document.createElement("div");
-    tmp.setAttribute("id", data[elem][0]);
-    tmp.setAttribute("class", data[elem][0] + " bar");
+    if (
+      Array.isArray(barOpts.backgroundColor) &&
+      typeof barOpts.backgroundColor[elem] !== "undefined"
+    ) {
+      barColor = barOpts.backgroundColor[elem];
+    } else if (typeof barOpts.backgroundColor[elem] === "undefined") {
+      barColor = undefined;
+    } else {
+      barColor = barOpts.backgroundColor;
+    }
 
     // Create bar element
-    createBarElement(
-      tmp,
-      data[elem][0],
-      data[elem][1],
-      barOpts.backgroundColor,
-      yScale
-    );
+    createBarElement(data[elem][0], data[elem][1], barColor, yScale);
 
     //Create x-axis labels
     xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor);
