@@ -35,6 +35,8 @@
 
 p {
   text-align: center;
+  margin-top: 1%;
+  margin-bottom: 1%;
 }
 
 .title {
@@ -51,4 +53,9 @@ p {
 
 .bottom {
   align-items: flex-end;
+}
+
+.xAxisLabel {
+  text-align: center;
+  margin: 0;
 }

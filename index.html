@@ -16,22 +16,22 @@
     <script>
       drawBarChart(
         [
-          ["May", 30],
-          ["June", 50],
-          ["July", 100],
-          ["42", 80],
-          ["43", 180],
-          ["44", 40],
-          ["45", 50],
+          ["May", 24.4],
+          ["June", 30.0],
+          ["July", 33.0],
+          ["August", 31.2],
+          ["September", 26.8],
+          ["October", 19.3],
+          ["November", 10.5],
         ],
         {
           graph: {
-            width: 400,
+            width: 600,
             height: 500,
-            title: "Test Title",
-            titleColor: "green",
+            title: "Average Monthly Temperature 2019",
+            titleColor: "red",
             titleSize: 20,
-            yTickSpacing: 30,
+            yTickSpacing: 5,
           },
           bar: {
             backgroundColor: [
@@ -43,9 +43,12 @@
               "red",
             ],
             // backgroundColor: "#3368FF",
+            xAxisLabel: "Month",
+            yAxisLabel: "Temperature (C)",
             labelColor: "black",
-            labelSize: 12,
+            labelSize: 16,
             dataLabelPos: "mid",
+            barSpacing: 0,
           },
         }
       );

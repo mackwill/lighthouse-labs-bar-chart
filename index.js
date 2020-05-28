@@ -18,7 +18,7 @@ const findYMax = function (data, height) {
 };
 
 const createYTicks = function (graphHeight, tickSpacing) {
-  let numOfTicks = Math.floor(graphHeight / tickSpacing);
+  let numOfTicks = graphHeight / tickSpacing;
 
   let tickHeight = 0;
   for (let i = 0; i <= numOfTicks; i++) {
@@ -38,18 +38,28 @@ const createYTicks = function (graphHeight, tickSpacing) {
   document.getElementById("tickMarks").style.height = 0 + "px";
 };
 
-const xLabel = function (xVal, labelSize, labelColor, barWidth) {
+const xLabel = function (xVal, barOpts, barWidth) {
   let tmp = document.createElement("p");
   tmp.setAttribute("class", xVal + " xLabel");
+  tmp.style.marginLeft = barOpts.barSpacing / 2 + "px";
+  tmp.style.marginRight = barOpts.barSpacing / 2 + "px";
   tmp.style.width = barWidth + "px";
-  tmp.style.fontSize = labelSize + "px";
-  tmp.style.color = labelColor;
+  tmp.style.fontSize = barOpts.labelSize + "px";
+  tmp.style.color = barOpts.labelColor;
 
   tmp.innerText = xVal;
   $("#graph").append(tmp);
 };
 
-const createChart = function (width, height, border = "1px solid black") {
+const labelXAxis = function (barOpts) {
+  let tmp = document.createElement("h1");
+  tmp.setAttribute("class", "xAxisLabel");
+  tmp.style.fontSize = barOpts.labelSize + "px";
+  tmp.innerText = barOpts.xAxisLabel;
+  $(".xLabels").after(tmp);
+};
+
+const createChart = function (width, height, border = "0.5px solid grey") {
   let tmp = document.createElement("div");
   tmp.setAttribute("id", "graph");
   tmp.style.width = width + "px";
@@ -85,6 +95,8 @@ const createBarElement = function (
   }
 
   tmp.style.width = barWidth + "px";
+  tmp.style.marginLeft = barOpts.barSpacing + "px";
+  tmp.style.marginRight = barOpts.barSpacing + "px";
   tmp.style.height = yVal * yScale * 0.8 + "px";
   tmp.style.backgroundColor = barColor;
   tmp.innerText = yVal;
@@ -128,8 +140,8 @@ const drawBarChart = function (data, options) {
       barOpts
     );
 
-    //Create x-axis labels
-    xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor, barWidth);
+    //Create x-axis data labels
+    xLabel(data[elem][0], barOpts, barWidth);
 
     i++;
   }
@@ -137,6 +149,7 @@ const drawBarChart = function (data, options) {
   $(".bar").wrapAll('<div class="bars container"></div>');
 
   createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
+  labelXAxis(barOpts);
 
   // data.map((elem) => {
   //   console.log("data.map elem: ", elem);
