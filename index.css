@@ -17,7 +17,7 @@
   /* margin-left: 1%;
   margin-right: 1%; */
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   margin-top: auto;
   margin-bottom: 0;
 }
@@ -39,4 +39,16 @@ p {
 
 .title {
   text-align: center;
+}
+
+.top {
+  align-items: flex-start;
+}
+
+.middle {
+  align-items: center;
+}
+
+.bottom {
+  align-items: flex-end;
 }

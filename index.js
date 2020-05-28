@@ -59,14 +59,30 @@ const createChart = function (width, height, border = "1px solid black") {
   $("body").append(tmp);
 };
 
-const createBarElement = function (xVal, yVal, barColor, yScale, barWidth) {
+const createBarElement = function (
+  xVal,
+  yVal,
+  barColor,
+  yScale,
+  barWidth,
+  barOpts
+) {
   if (barColor === undefined) {
     barColor = "#FF8D33";
   }
 
   let tmp = document.createElement("div");
   tmp.setAttribute("id", xVal);
-  tmp.setAttribute("class", xVal + " bar");
+
+  switch (barOpts.dataLabelPos) {
+    case "top":
+    case "middle":
+    case "bottom":
+      tmp.setAttribute("class", `${xVal} bar ${barOpts.dataLabelPos}`);
+      break;
+    default:
+      tmp.setAttribute("class", `${xVal} bar middle`);
+  }
 
   tmp.style.width = barWidth + "px";
   tmp.style.height = yVal * yScale * 0.8 + "px";
@@ -103,7 +119,14 @@ const drawBarChart = function (data, options) {
     }
 
     // Create bar element
-    createBarElement(data[elem][0], data[elem][1], barColor, yScale, barWidth);
+    createBarElement(
+      data[elem][0],
+      data[elem][1],
+      barColor,
+      yScale,
+      barWidth,
+      barOpts
+    );
 
     //Create x-axis labels
     xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor, barWidth);
