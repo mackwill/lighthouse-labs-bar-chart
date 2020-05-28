@@ -17,19 +17,39 @@ const findYMax = function (data, height) {
   return height / Math.max(...yData);
 };
 
-const xLabel = function (xVal, labelSize, labelColor) {
+const createYTicks = function (graphHeight, tickSpacing) {
+  let numOfTicks = Math.floor(graphHeight / tickSpacing);
+
+  let tickHeight = 0;
+  for (let i = 0; i <= numOfTicks; i++) {
+    i === 0
+      ? (tickHeight = graphHeight)
+      : (tickHeight = (1 - (1 / numOfTicks) * i) * graphHeight);
+
+    let tmp = document.createElement("div");
+    tmp.setAttribute("class", "tick");
+    tmp.style.position = "relative";
+    tmp.style.border = "0.5px solid grey";
+    tmp.style.top = tickHeight + "px";
+    tmp.style.zIndex = 50;
+    $(".bars").before(tmp);
+  }
+  $(".tick").wrapAll('<div id="tickMarks"></div>');
+  document.getElementById("tickMarks").style.height = 0 + "px";
+};
+
+const xLabel = function (xVal, labelSize, labelColor, barWidth) {
   let tmp = document.createElement("p");
   tmp.setAttribute("class", xVal + " xLabel");
-  tmp.style.fontSize = labelSize;
+  tmp.style.width = barWidth + "px";
+  tmp.style.fontSize = labelSize + "px";
   tmp.style.color = labelColor;
 
   tmp.innerText = xVal;
-  $("#" + xVal).append(tmp);
+  $("#graph").append(tmp);
 };
 
 const createChart = function (width, height, border = "1px solid black") {
-  console.log("createChart width: ", width);
-  console.log("createChart height: ", height);
   let tmp = document.createElement("div");
   tmp.setAttribute("id", "graph");
   tmp.style.width = width + "px";
@@ -39,11 +59,7 @@ const createChart = function (width, height, border = "1px solid black") {
   $("body").append(tmp);
 };
 
-// const defineBarColor = function(backgroundColor) {
-//   for (let i = 0; i < )
-// }
-
-const createBarElement = function (xVal, yVal, barColor, yScale) {
+const createBarElement = function (xVal, yVal, barColor, yScale, barWidth) {
   if (barColor === undefined) {
     barColor = "#FF8D33";
   }
@@ -52,6 +68,7 @@ const createBarElement = function (xVal, yVal, barColor, yScale) {
   tmp.setAttribute("id", xVal);
   tmp.setAttribute("class", xVal + " bar");
 
+  tmp.style.width = barWidth + "px";
   tmp.style.height = yVal * yScale * 0.8 + "px";
   tmp.style.backgroundColor = barColor;
   tmp.innerText = yVal;
@@ -65,8 +82,10 @@ const drawBarChart = function (data, options) {
   let graphOpts = options.graph;
   let barOpts = options.bar;
   let barColor = "";
+  let barWidth = (graphOpts.width / data.length) * 0.7;
 
   let yScale = findYMax(data, graphOpts.height);
+  console.log(`yScale: ${yScale}`);
 
   createChart(graphOpts.width, graphOpts.height);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
@@ -84,21 +103,17 @@ const drawBarChart = function (data, options) {
     }
 
     // Create bar element
-    createBarElement(data[elem][0], data[elem][1], barColor, yScale);
+    createBarElement(data[elem][0], data[elem][1], barColor, yScale, barWidth);
 
     //Create x-axis labels
-    xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor);
-
-    // Create parent div element for bar and x-axis label
-    $("." + data[elem][0]).wrapAll(function () {
-      return `<div class="${data[elem][0]} container
-              id=${data[elem][0]}-wrapper"
-              style="width: ${(graphOpts.width / data.length) * 0.7}px"></div>`;
-    });
+    xLabel(data[elem][0], barOpts.labelSize, barOpts.labelColor, barWidth);
 
     i++;
   }
-  $(".container").wrapAll('<div class="bars"></div>');
+  $(".xLabel").wrapAll('<div class="xLabels container"></div>');
+  $(".bar").wrapAll('<div class="bars container"></div>');
+
+  createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
 
   // data.map((elem) => {
   //   console.log("data.map elem: ", elem);

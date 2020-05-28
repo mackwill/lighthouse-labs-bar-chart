@@ -8,6 +8,8 @@
 .bars {
   display: flex;
   justify-content: space-around;
+  position: relative;
+  z-index: 200;
 }
 
 .bar {
@@ -16,6 +18,8 @@
   margin-right: 1%; */
   justify-content: center;
   align-items: center;
+  margin-top: auto;
+  margin-bottom: 0;
 }
 
 .container {
@@ -24,8 +28,13 @@
   text-align: center;
 }
 
-.xLabel {
-  transform: rotate(-45deg);
+.xLabels {
+  display: flex;
+  justify-content: space-around;
+}
+
+p {
+  text-align: center;
 }
 
 .title {
