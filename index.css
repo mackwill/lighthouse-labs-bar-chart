@@ -7,7 +7,7 @@
 
 .bars {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   position: relative;
   z-index: 200;
 }
@@ -20,6 +20,7 @@
   /* align-items: center; */
   margin-top: auto;
   margin-bottom: 0;
+  /* box-shadow: 6px -8px 2px -1px rgba(0, 0, 0, 0.75); */
 }
 
 .container {
@@ -30,7 +31,7 @@
 
 .xLabels {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 p {

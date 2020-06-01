@@ -34,15 +34,38 @@ const createYTicks = function (graphHeight, tickSpacing) {
     tmp.style.zIndex = 50;
     $(".bars").before(tmp);
   }
-  $(".tick").wrapAll('<div id="tickMarks"></div>');
+  $(".tick").wrapAll('<div id="tickMarks" class="container"></div>');
   document.getElementById("tickMarks").style.height = 0 + "px";
 };
 
-const xLabel = function (xVal, barOpts, barWidth) {
+const checkTotalBarWidth = function (className, graphWidth) {
+  let children = document.getElementById(className).children;
+  let totalWdith = 0;
+
+  for (let i = 0; i < children.length; i++) {
+    // console.log(children[i].clientWidth);
+    console.log(children[i]);
+    totalWdith += children[i].clientWidth;
+    totalWdith += parseInt(children[i].style.marginLeft);
+    totalWdith += parseInt(children[i].style.marginRight);
+  }
+
+  console.log("checkTotalBarWidth: ", totalWdith, totalWdith > graphWidth);
+  return totalWdith > graphWidth;
+};
+
+const modifyElementMargin = function (spacing, className) {
+  $("." + className).css({
+    "margin-left": spacing + "px",
+    "margin-right": spacing + "px",
+  });
+};
+
+const labelXData = function (xVal, barOpts, barWidth) {
   let tmp = document.createElement("p");
   tmp.setAttribute("class", xVal + " xLabel");
-  tmp.style.marginLeft = barOpts.barSpacing / 2 + "px";
-  tmp.style.marginRight = barOpts.barSpacing / 2 + "px";
+  tmp.style.marginLeft = barOpts.barSpacing + "px";
+  tmp.style.marginRight = barOpts.barSpacing + "px";
   tmp.style.width = barWidth + "px";
   tmp.style.fontSize = barOpts.labelSize + "px";
   tmp.style.color = barOpts.labelColor;
@@ -70,8 +93,7 @@ const createChart = function (width, height, border = "0.5px solid grey") {
 };
 
 const createBarElement = function (
-  xVal,
-  yVal,
+  values,
   barColor,
   yScale,
   barWidth,
@@ -82,25 +104,33 @@ const createBarElement = function (
   }
 
   let tmp = document.createElement("div");
-  tmp.setAttribute("id", xVal);
+  tmp.setAttribute("id", values[0]);
 
   switch (barOpts.dataLabelPos) {
     case "top":
     case "middle":
     case "bottom":
-      tmp.setAttribute("class", `${xVal} bar ${barOpts.dataLabelPos}`);
+      tmp.setAttribute("class", `${values[0]} bar ${barOpts.dataLabelPos}`);
       break;
     default:
-      tmp.setAttribute("class", `${xVal} bar middle`);
+      tmp.setAttribute("class", `${values[0]} bar middle`);
   }
 
-  tmp.style.width = barWidth + "px";
+  barOpts.barShadow === "yes"
+    ? (tmp.style.boxShadow = "4px -3px 2px -1px rgba(0,0,0,0.75)")
+    : null;
+
+  // if (checkTotalBarWidth("bars"))
   tmp.style.marginLeft = barOpts.barSpacing + "px";
   tmp.style.marginRight = barOpts.barSpacing + "px";
-  tmp.style.height = yVal * yScale * 0.8 + "px";
-  tmp.style.backgroundColor = barColor;
-  tmp.innerText = yVal;
 
+  tmp.style.width = barWidth + "px";
+
+  tmp.style.height = values[1] * yScale * 0.8 + "px";
+  tmp.style.backgroundColor = barColor;
+  tmp.innerText = values[1];
+
+  // $(".bars container").append(tmp);
   $("#graph").append(tmp);
 };
 
@@ -117,6 +147,9 @@ const drawBarChart = function (data, options) {
 
   createChart(graphOpts.width, graphOpts.height);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
+  // $("#graph").append(
+  //   document.createElement("div").setAttribute("class", "bars container")
+  // );
 
   for (let elem in data) {
     if (
@@ -131,41 +164,27 @@ const drawBarChart = function (data, options) {
     }
 
     // Create bar element
-    createBarElement(
-      data[elem][0],
-      data[elem][1],
-      barColor,
-      yScale,
-      barWidth,
-      barOpts
-    );
+    createBarElement(data[elem], barColor, yScale, barWidth, barOpts);
 
     //Create x-axis data labels
-    xLabel(data[elem][0], barOpts, barWidth);
+    labelXData(data[elem][0], barOpts, barWidth);
 
     i++;
   }
-  $(".xLabel").wrapAll('<div class="xLabels container"></div>');
-  $(".bar").wrapAll('<div class="bars container"></div>');
+  $(".xLabel").wrapAll('<div class="xLabels container" id="xLabels"></div>');
+  $(".bar").wrapAll('<div class="bars container" id="bars"></div>');
 
   createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
   labelXAxis(barOpts);
 
-  // data.map((elem) => {
-  //   console.log("data.map elem: ", elem);
-  //   let tmp = document.createElement("div");
-  //   tmp.setAttribute("id", elem[0]);
-  //   tmp.setAttribute("class", elem[0] + " bar");
+  // This block of code checks the width of bar elements with the inputted bar spacing against the graph width.
+  // If it is greater, then the container will have the justifyContent space-around property set
 
-  //   createBarElement(tmp, elem[0], elem[1], i, options, yScale);
-  //   xLabel(elem[0]);
-
-  //   $("." + elem[0]).wrapAll(function () {
-  //     return `<div class="${elem[0]} container
-  //             id=${elem[0]}-wrapper"
-  //             style="width: ${(options.width / data.length) * 0.7}px"></div>`;
-  //   });
-
-  //   i++;
-  // });
+  if (checkTotalBarWidth("bars", graphOpts.width)) {
+    console.log("Width greater than graph");
+    modifyElementMargin(0, "bar");
+    modifyElementMargin(0, "xLabel");
+    document.getElementById("bars").style.justifyContent = "space-around";
+    document.getElementById("xLabels").style.justifyContent = "space-around";
+  }
 };
