@@ -43,14 +43,11 @@ const checkTotalBarWidth = function (className, graphWidth) {
   let totalWdith = 0;
 
   for (let i = 0; i < children.length; i++) {
-    // console.log(children[i].clientWidth);
-    console.log(children[i]);
     totalWdith += children[i].clientWidth;
     totalWdith += parseInt(children[i].style.marginLeft);
     totalWdith += parseInt(children[i].style.marginRight);
   }
 
-  console.log("checkTotalBarWidth: ", totalWdith, totalWdith > graphWidth);
   return totalWdith > graphWidth;
 };
 
@@ -82,8 +79,13 @@ const labelXAxis = function (barOpts) {
   $(".xLabels").after(tmp);
 };
 
-const createChart = function (width, height, border = "0.5px solid grey") {
-  let tmp = document.createElement("div");
+const createChart = function (
+  width,
+  height,
+  border = "0.5px solid grey",
+  element
+) {
+  let tmp = document.createElement(element);
   tmp.setAttribute("id", "graph");
   tmp.style.width = width + "px";
   tmp.style.height = height + "px";
@@ -134,7 +136,7 @@ const createBarElement = function (
   $("#graph").append(tmp);
 };
 
-const drawBarChart = function (data, options) {
+const drawBarChart = function (data, options, element) {
   let i = 0;
 
   let graphOpts = options.graph;
@@ -143,13 +145,9 @@ const drawBarChart = function (data, options) {
   let barWidth = (graphOpts.width / data.length) * 0.7;
 
   let yScale = findYMax(data, graphOpts.height);
-  console.log(`yScale: ${yScale}`);
 
-  createChart(graphOpts.width, graphOpts.height);
+  createChart(graphOpts.width, graphOpts.height, element);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
-  // $("#graph").append(
-  //   document.createElement("div").setAttribute("class", "bars container")
-  // );
 
   for (let elem in data) {
     if (
@@ -181,7 +179,6 @@ const drawBarChart = function (data, options) {
   // If it is greater, then the container will have the justifyContent space-around property set
 
   if (checkTotalBarWidth("bars", graphOpts.width)) {
-    console.log("Width greater than graph");
     modifyElementMargin(0, "bar");
     modifyElementMargin(0, "xLabel");
     document.getElementById("bars").style.justifyContent = "space-around";

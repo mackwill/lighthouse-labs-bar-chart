@@ -1,7 +1,5 @@
 #graph {
   display: block;
-  /* flex-direction: row;
-  justify-content: space-around; */
   padding: 5px;
 }
 
@@ -14,13 +12,9 @@
 
 .bar {
   display: flex;
-  /* margin-left: 1%;
-  margin-right: 1%; */
   justify-content: center;
-  /* align-items: center; */
   margin-top: auto;
   margin-bottom: 0;
-  /* box-shadow: 6px -8px 2px -1px rgba(0, 0, 0, 0.75); */
 }
 
 .container {
