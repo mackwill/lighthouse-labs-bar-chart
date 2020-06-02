@@ -47,7 +47,7 @@ const checkTotalBarWidth = function (className, graphWidth) {
     totalWdith += parseInt(children[i].style.marginLeft);
     totalWdith += parseInt(children[i].style.marginRight);
   }
-
+  console.log("totalWidth > graphWidth:", totalWdith, totalWdith > graphWidth);
   return totalWdith > graphWidth;
 };
 
@@ -94,17 +94,7 @@ const createChart = function (
   $("body").append(tmp);
 };
 
-const createBarElement = function (
-  values,
-  barColor,
-  yScale,
-  barWidth,
-  barOpts
-) {
-  if (barColor === undefined) {
-    barColor = "#FF8D33";
-  }
-
+const createSingleBar = function (values, barOpts) {
   let tmp = document.createElement("div");
   tmp.setAttribute("id", values[0]);
 
@@ -118,27 +108,58 @@ const createBarElement = function (
       tmp.setAttribute("class", `${values[0]} bar middle`);
   }
 
+  $("#bars").append(tmp);
+};
+
+const stylizeBar = function (
+  xVal,
+  yVal,
+  selectedElem,
+  barOpts,
+  barWidth,
+  barColor,
+  yScale
+) {
+  if (barColor === undefined) {
+    barColor = "#FF8D33";
+  }
+
   barOpts.barShadow === "yes"
-    ? (tmp.style.boxShadow = "4px -3px 2px -1px rgba(0,0,0,0.75)")
+    ? (selectedElem.style.boxShadow = "4px -3px 2px -1px rgba(0,0,0,0.75)")
     : null;
 
-  // if (checkTotalBarWidth("bars"))
-  tmp.style.marginLeft = barOpts.barSpacing + "px";
-  tmp.style.marginRight = barOpts.barSpacing + "px";
+  modifyElementMargin(barOpts.barSpacing, xVal);
 
-  tmp.style.width = barWidth + "px";
+  $("#" + xVal).css({
+    height: yVal * yScale * 0.8 + "px",
+    "background-color": barColor,
+    width: barWidth + "px",
+  });
 
-  tmp.style.height = values[1] * yScale * 0.8 + "px";
-  tmp.style.backgroundColor = barColor;
-  tmp.innerText = values[1];
+  selectedElem.innerText = yVal;
+};
 
-  // $(".bars container").append(tmp);
-  $("#graph").append(tmp);
+const createMultiBar = function (values, barOpts, index) {
+  let tmp = document.createElement("div");
+  tmp.setAttribute("id", values[0] + "-" + values[index]);
+
+  switch (barOpts.dataLabelPos) {
+    case "top":
+    case "middle":
+    case "bottom":
+      tmp.setAttribute(
+        "class",
+        `${values[0]}-${values[index]} bar ${barOpts.dataLabelPos}`
+      );
+      break;
+    default:
+      tmp.setAttribute("class", `${values[0]}-${values[index]}bar middle`);
+  }
+
+  // tmp.innerText = values[1];
 };
 
 const drawBarChart = function (data, options, element) {
-  let i = 0;
-
   let graphOpts = options.graph;
   let barOpts = options.bar;
   let barColor = "";
@@ -148,6 +169,13 @@ const drawBarChart = function (data, options, element) {
 
   createChart(graphOpts.width, graphOpts.height, element);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
+
+  $("#graph").append(
+    $(document.createElement("div")).attr({
+      id: "bars",
+      class: "bars conrtainer",
+    })
+  );
 
   for (let elem in data) {
     if (
@@ -162,15 +190,49 @@ const drawBarChart = function (data, options, element) {
     }
 
     // Create bar element
-    createBarElement(data[elem], barColor, yScale, barWidth, barOpts);
+    createSingleBar(data[elem], barOpts);
+    stylizeBar(
+      data[elem][0],
+      data[elem][1],
+      document.getElementById(data[elem][0]),
+      barOpts,
+      barWidth,
+      barColor,
+      yScale
+    );
+
+    // Multi Bar Element
+
+    // if (data[elem].length > 2) {
+    //   for (let i = 0; i < data[elem].length; i++) {
+    //     createMultiBar(data[elem], barOpts, i);
+    //     stylizeBar(
+    //       data[elem][0],
+    //       data[elem][1],
+    //       document.getElementById(data[elem][0]),
+    //       barOpts,
+    //       barWidth,
+    //       barColor,
+    //       yScale
+    //     );
+    //   }
+    // } else {
+    //   createSingleBar(data[elem], barOpts);
+    //   stylizeBar(
+    //     data[elem],
+    //     document.getElementById(data[elem][0]),
+    //     barOpts,
+    //     barWidth,
+    //     barColor,
+    //     yScale
+    //   );
+    // }
 
     //Create x-axis data labels
     labelXData(data[elem][0], barOpts, barWidth);
-
-    i++;
   }
+
   $(".xLabel").wrapAll('<div class="xLabels container" id="xLabels"></div>');
-  $(".bar").wrapAll('<div class="bars container" id="bars"></div>');
 
   createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
   labelXAxis(barOpts);
