@@ -25,14 +25,9 @@ const findYMax = function (data, height) {
 
 const createYTicks = function (graphHeight, tickSpacing) {
   let numOfTicks = graphHeight / tickSpacing;
-  console.log("number of ticks: ", numOfTicks);
 
   let tickHeight = 0;
   for (let i = 0; i <= numOfTicks; i++) {
-    // i === 0
-    //   ? (tickHeight = graphHeight)
-    //   : (tickHeight = (graphHeight / numOfTicks) * i);
-    // tickHeight = (1 - (1 / numOfTicks) * i) * graphHeight;
     tickHeight = graphHeight - (graphHeight / numOfTicks) * i;
     let tmp = document.createElement("div");
     tmp.setAttribute("class", "tick");
@@ -46,6 +41,37 @@ const createYTicks = function (graphHeight, tickSpacing) {
   document.getElementById("tickMarks").style.height = 0 + "px";
 };
 
+const createBarColorArray = function (barColor, data) {
+  let barColorArr = [];
+
+  for (let i = 0; i < data.length; i++) {
+    if (typeof barColor[i] === "undefined") {
+      barColor.push("");
+    }
+    if (Array.isArray(data[i])) {
+      barColorArr.push([]);
+      for (let j = 1; j < data[i].length; j++) {
+        if (
+          typeof barColor[i][j] === "undefined" ||
+          Array.isArray(barColor[i]) === false
+        ) {
+          barColorArr[i].push(
+            "rgba(" +
+              Math.round(Math.random() * 255) +
+              "," +
+              Math.round(Math.random() * 255) +
+              "," +
+              Math.round(Math.random() * 255) +
+              ")"
+          );
+        } else {
+          barColorArr[i].push(barColor[i][j]);
+        }
+      }
+    }
+  }
+  return barColorArr;
+};
 const checkTotalBarWidth = function (className, graphWidth) {
   let children = document.getElementById(className).children;
   let totalWdith = 0;
@@ -93,7 +119,6 @@ const createChart = function (
   element,
   border = "0.5px solid grey"
 ) {
-  console.log("createChart element: ", element);
   let tmp = document.createElement(element);
   tmp.setAttribute("id", "graph");
   tmp.style.width = width + "px";
@@ -129,11 +154,10 @@ const stylizeBar = function (
   barColor,
   yScale
 ) {
-  if (barColor === undefined) {
+  console.log("stylizeBar barColor: ", barColor);
+  if (barColor === undefined || barColor === "") {
     barColor = "#FF8D33";
   }
-  console.log("stylize bar barwidth:", xVal, barWidth);
-
   barOpts.barShadow === "yes"
     ? (selectedElem.style.boxShadow = "4px -3px 2px -1px rgba(0,0,0,0.75)")
     : null;
@@ -174,7 +198,6 @@ const drawBarChart = function (data, options, element) {
 
   let yScale = findYMax(data, graphOpts.height);
 
-  console.log("main function element: ", element);
   createChart(graphOpts.width, graphOpts.height, element);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
 
@@ -185,8 +208,7 @@ const drawBarChart = function (data, options, element) {
     })
   );
 
-  for (let elem in data) {
-    console.log(data[elem]);
+  for (elem in data) {
     if (
       Array.isArray(barOpts.backgroundColor) &&
       typeof barOpts.backgroundColor[elem] !== "undefined"
@@ -198,39 +220,31 @@ const drawBarChart = function (data, options, element) {
       barColor = barOpts.backgroundColor;
     }
 
-    // // Create bar element
-    // createSingleBar(data[elem], barOpts);
-    // stylizeBar(
-    //   data[elem][0],
-    //   data[elem][1],
-    //   document.getElementById(data[elem][0]),
-    //   barOpts,
-    //   barWidth,
-    //   barColor,
-    //   yScale
-    // );
-
     // Multi Bar Element
 
-    console.log(
-      "before multi element check, data[elem].length: ",
-      data[elem].length
-    );
+    barColorArr = createBarColorArray(barOpts.backgroundColor, data);
+    console.log("barColorArr: ", barColorArr[elem]);
+
     if (data[elem].length > 2) {
       $("#bars").append(
         $(document.createElement("div"))
           .attr({
             id: data[elem][0] + "-container",
-            class: data[elem][0],
+            class: data[elem][0] + " bar",
           })
           .css({
             display: "block",
             "margin-top": "auto",
             "margin-bottom": 0,
+            "margin-left": 0,
+            "margin-right": 0,
           })
       );
 
-      for (let i = data[elem].length - 1; i >= 1; i--) {
+      console.log("elem: ", elem);
+
+      // for (let i = data[elem].length - 1; i >= 1; i--) {
+      for (let i = 1; i < data[elem].length; i++) {
         createMultiBar(data[elem], barOpts, i);
         stylizeBar(
           data[elem][0],
@@ -238,7 +252,7 @@ const drawBarChart = function (data, options, element) {
           document.getElementById(data[elem][0] + "-" + data[elem][i]),
           barOpts,
           barWidth,
-          barColor,
+          barColorArr[elem][i - 1],
           yScale
         );
       }
