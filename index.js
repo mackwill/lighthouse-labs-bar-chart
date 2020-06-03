@@ -23,6 +23,7 @@ const findYMax = function (data, height) {
   return height / Math.max(...yData);
 };
 
+//Creates Y Axis Horizontal Lines
 const createYTicks = function (graphHeight, tickSpacing) {
   let numOfTicks = graphHeight / tickSpacing;
 
@@ -81,7 +82,6 @@ const checkTotalBarWidth = function (className, graphWidth) {
     totalWdith += parseInt(children[i].style.marginLeft);
     totalWdith += parseInt(children[i].style.marginRight);
   }
-  console.log("totalWidth > graphWidth:", totalWdith, totalWdith > graphWidth);
   return totalWdith > graphWidth;
 };
 
@@ -113,6 +113,7 @@ const labelXAxis = function (barOpts) {
   $(".xLabels").after(tmp);
 };
 
+// Function that creates the overall chart
 const createChart = function (
   width,
   height,
@@ -128,6 +129,7 @@ const createChart = function (
   $("body").append(tmp);
 };
 
+// Function that is called when stacked data is not an input
 const createSingleBar = function (values, barOpts) {
   let tmp = document.createElement("div");
   tmp.setAttribute("id", values[0]);
@@ -239,7 +241,6 @@ const drawBarChart = function (data, options, element) {
           })
       );
 
-      // for (let i = data[elem].length - 1; i >= 1; i--) {
       for (let i = 1; i < data[elem].length; i++) {
         createMultiBar(data[elem], barOpts, i);
         stylizeBar(
