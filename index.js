@@ -50,7 +50,7 @@ const createBarColorArray = function (barColor, data) {
     }
     if (Array.isArray(data[i])) {
       barColorArr.push([]);
-      for (let j = 1; j < data[i].length; j++) {
+      for (let j = 0; j < data[i].length - 1; j++) {
         if (
           typeof barColor[i][j] === "undefined" ||
           Array.isArray(barColor[i]) === false
@@ -154,7 +154,6 @@ const stylizeBar = function (
   barColor,
   yScale
 ) {
-  console.log("stylizeBar barColor: ", barColor);
   if (barColor === undefined || barColor === "") {
     barColor = "#FF8D33";
   }
@@ -223,7 +222,6 @@ const drawBarChart = function (data, options, element) {
     // Multi Bar Element
 
     barColorArr = createBarColorArray(barOpts.backgroundColor, data);
-    console.log("barColorArr: ", barColorArr[elem]);
 
     if (data[elem].length > 2) {
       $("#bars").append(
@@ -240,8 +238,6 @@ const drawBarChart = function (data, options, element) {
             "margin-right": 0,
           })
       );
-
-      console.log("elem: ", elem);
 
       // for (let i = data[elem].length - 1; i >= 1; i--) {
       for (let i = 1; i < data[elem].length; i++) {
