@@ -92,6 +92,27 @@ const modifyElementMargin = function (spacing, className) {
   });
 };
 
+const rotateText = function (elemId) {
+  let child = document.getElementById(elemId).children;
+  for (let i = 1; i < child.length; i++) {
+    // console.log("xLabel left position: ", child[i].offsetLeft);
+    // console.log(
+    //   "xLabel right position: ",
+    //   child[i].offsetLeft + child[i].offsetWidth
+    // );
+
+    let currentLeft = child[i].offsetLeft;
+    let prevRight = child[i - 1].offsetLeft + child[i - 1].offsetWidth;
+
+    if (currentLeft <= prevRight) {
+      console.log("rotate text: ", child[i].className);
+      $("#" + elemId)
+        .children()
+        .css("transform", "rotate(-20deg)");
+      break;
+    }
+  }
+};
 const labelXData = function (xVal, barOpts, barWidth) {
   let tmp = document.createElement("p");
   tmp.setAttribute("class", xVal + " xLabel");
@@ -100,6 +121,8 @@ const labelXData = function (xVal, barOpts, barWidth) {
   tmp.style.width = barWidth + "px";
   tmp.style.fontSize = barOpts.labelSize + "px";
   tmp.style.color = barOpts.labelColor;
+
+  // console.log("labelXData position: ", $(tmp).position());
 
   tmp.innerText = xVal;
   $("#graph").append(tmp);
@@ -271,7 +294,8 @@ const drawBarChart = function (data, options, element) {
   }
 
   $(".xLabel").wrapAll('<div class="xLabels container" id="xLabels"></div>');
-
+  rotateText("xLabels");
+  // console.log("xLabel children length: ", child.length);
   createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
   labelXAxis(barOpts);
 

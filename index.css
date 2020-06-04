@@ -26,6 +26,7 @@
 .xLabels {
   display: flex;
   justify-content: center;
+  padding-top: 10px;
 }
 
 p {
@@ -53,4 +54,5 @@ p {
 .xAxisLabel {
   text-align: center;
   margin: 0;
+  padding-top: 5px;
 }
