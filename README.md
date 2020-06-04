@@ -26,6 +26,7 @@ This function takes in three arguments:
 * element: Takes an html element (i.e div, h1, p) as a string that the user would like to render the graph
 
 Here is an example call of the function:
+```
 drawBarChart( [["May", 21.4], ["June", 30.0],  ["July", 33.0], ["August", 31.2], ["September", 29], ["October", 19.3], ["November", 10.5]],
 {
 graph: {
@@ -48,7 +49,7 @@ barShadow: "yes",
 },
 "div"
 );
-
+```
 ## What This Project Supports
 This project supports the creation of a customizable bar chart graph or stacked bar chart graph based on user input (i.e graph height/width, inputted data).
 Currently supported customizable options:
