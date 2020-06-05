@@ -7,6 +7,8 @@
     "eslint-config-lighthouselabs": "lighthouse-labs/eslint-config-lighthouselabs"
   },
   "dependencies": {
+    "babel": "^6.23.0",
     "jquery": "^3.5.1"
-  }
+  },
+  "type": "module"
 }

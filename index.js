@@ -95,12 +95,6 @@ const modifyElementMargin = function (spacing, className) {
 const rotateText = function (elemId) {
   let child = document.getElementById(elemId).children;
   for (let i = 1; i < child.length; i++) {
-    // console.log("xLabel left position: ", child[i].offsetLeft);
-    // console.log(
-    //   "xLabel right position: ",
-    //   child[i].offsetLeft + child[i].offsetWidth
-    // );
-
     let currentLeft = child[i].offsetLeft;
     let prevRight = child[i - 1].offsetLeft + child[i - 1].offsetWidth;
 
@@ -121,8 +115,6 @@ const labelXData = function (xVal, barOpts, barWidth) {
   tmp.style.width = barWidth + "px";
   tmp.style.fontSize = barOpts.labelSize + "px";
   tmp.style.color = barOpts.labelColor;
-
-  // console.log("labelXData position: ", $(tmp).position());
 
   tmp.innerText = xVal;
   $("#graph").append(tmp);
@@ -152,10 +144,10 @@ const createChart = function (
   $("body").append(tmp);
 };
 
-// Function that is called when stacked data is not an input
-const createSingleBar = function (values, barOpts) {
+// Creates bar element
+
+const createBar = function (values, barOpts, index) {
   let tmp = document.createElement("div");
-  tmp.setAttribute("id", values[0]);
 
   switch (barOpts.dataLabelPos) {
     case "top":
@@ -166,8 +158,13 @@ const createSingleBar = function (values, barOpts) {
     default:
       tmp.setAttribute("class", `${values[0]} bar middle`);
   }
-
-  $("#bars").append(tmp);
+  if (typeof index !== "undefined") {
+    tmp.setAttribute("id", values[0] + "-" + values[index]);
+    $("#" + values[0] + "-container").append(tmp);
+  } else {
+    tmp.setAttribute("id", values[0]);
+    $("#bars").append(tmp);
+  }
 };
 
 const stylizeBar = function (
@@ -195,23 +192,6 @@ const stylizeBar = function (
   });
 
   selectedElem.innerText = yVal;
-};
-
-const createMultiBar = function (values, barOpts, index) {
-  let tmp = document.createElement("div");
-  tmp.setAttribute("id", values[0] + "-" + values[index]);
-
-  switch (barOpts.dataLabelPos) {
-    case "top":
-    case "middle":
-    case "bottom":
-      tmp.setAttribute("class", `${values[0]} bar ${barOpts.dataLabelPos}`);
-      break;
-    default:
-      tmp.setAttribute("class", `${values[0]} bar middle`);
-  }
-
-  $("#" + values[0] + "-container").append(tmp);
 };
 
 const drawBarChart = function (data, options, element) {
@@ -265,7 +245,8 @@ const drawBarChart = function (data, options, element) {
       );
 
       for (let i = 1; i < data[elem].length; i++) {
-        createMultiBar(data[elem], barOpts, i);
+        createBar(data[elem], barOpts, i);
+        // createMultiBar(data[elem], barOpts, i);
         stylizeBar(
           data[elem][0],
           data[elem][i],
@@ -277,7 +258,8 @@ const drawBarChart = function (data, options, element) {
         );
       }
     } else {
-      createSingleBar(data[elem], barOpts);
+      createBar(data[elem], barOpts);
+      // createSingleBar(data[elem], barOpts);
       stylizeBar(
         data[elem][0],
         data[elem][1],
