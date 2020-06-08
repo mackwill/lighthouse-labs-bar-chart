@@ -38,7 +38,7 @@ const createYTicks = function (graphHeight, tickSpacing) {
     tmp.style.zIndex = 50;
     $(".bars").before(tmp);
   }
-  $(".tick").wrapAll('<div id="tickMarks" class="container"></div>');
+  $(".tick").wrapAll('<div id="tickMarks" class="container flex"></div>');
   document.getElementById("tickMarks").style.height = 0 + "px";
 };
 
@@ -128,6 +128,14 @@ const labelXAxis = function (barOpts) {
   $(".xLabels").after(tmp);
 };
 
+const labelYAxis = function (barOpts) {
+  let tmp = document.createElement("h1");
+  tmp.setAttribute("class", "yAxisLabel flex column-left");
+  tmp.style.fontSize = barOpts.labelSize + "px";
+  tmp.innerText = barOpts.yAxisLabel;
+  $("#graph").append(tmp);
+};
+
 // Function that creates the overall chart
 const createChart = function (
   width,
@@ -205,10 +213,12 @@ const drawBarChart = function (data, options, element) {
   createChart(graphOpts.width, graphOpts.height, element);
   createGraphTitle(graphOpts.title, graphOpts.titleColor, graphOpts.titleSize);
 
+  labelYAxis(barOpts);
+
   $("#graph").append(
     $(document.createElement("div")).attr({
       id: "bars",
-      class: "bars conrtainer",
+      class: "bars container flex",
     })
   );
 
@@ -275,7 +285,9 @@ const drawBarChart = function (data, options, element) {
     labelXData(data[elem][0], barOpts, barWidth);
   }
 
-  $(".xLabel").wrapAll('<div class="xLabels container" id="xLabels"></div>');
+  $(".xLabel").wrapAll(
+    '<div class="xLabels container flex" id="xLabels"></div>'
+  );
   rotateText("xLabels");
   // console.log("xLabel children length: ", child.length);
   createYTicks($(".bars").height(), graphOpts.yTickSpacing * yScale * 0.8);
@@ -290,4 +302,36 @@ const drawBarChart = function (data, options, element) {
     document.getElementById("bars").style.justifyContent = "space-around";
     document.getElementById("xLabels").style.justifyContent = "space-around";
   }
+
+  // $("#graph").append(
+  //   $(document.createElement("div")).attr({
+  //     id: "flexCont1",
+  //     class: "overall flex-container",
+  //   })
+  // );
+
+  // $("#graph").append(
+  //   $(document.createElement("div")).attr({
+  //     id: "flexCont2",
+  //     class: "inner flex-container",
+  //   })
+  // );
+
+  // console.log($("#flexCont2"));
+  // console.log($("#tickMarks"));
+  $(".flex").wrapAll(
+    $(document.createElement("div")).attr({
+      id: "flexCont1",
+      class: "overall flex-container",
+    })
+  );
+
+  $(".container").wrapAll(
+    $(document.createElement("div")).attr({
+      id: "flexCont2",
+      class: "inner flex-container column-right",
+    })
+  );
+
+  // $(".yAxisLabel").wrap($("#flexCont1"));
 };
